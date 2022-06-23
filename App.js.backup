@@ -1,0 +1,155 @@
+import
+{
+	StyleSheet,
+	Text,
+	View,
+	ScrollView,
+	TextInput,
+	Image,
+	Button,
+	FlatList,
+	StatusBar,
+	SafeAreaView,
+	List
+} from 'react-native';
+
+import Chat from './components/Chat';
+
+const TestMessages = [
+	{
+		id: 1,
+		sender: 'Username',
+		contents: 'Message contents'
+	},
+	{
+		id: 2,
+		sender: 'User #1',
+		contents: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum'
+	},
+	{
+		id: 3,
+		sender: 'Ligma',
+		contents:
+		{
+			type: 'image',
+			value: 'https://cdn.discordapp.com/attachments/835534948575215687/989514372957241384/Screenshot_20220623-225242_Chrome.jpg'
+		}
+	}
+]
+
+const MessageContentTypeMap =
+{
+	'text': (contents) => <Text style={styles.messageContentsText}>{contents}</Text>,
+	'image': (contents) => <Image style={styles.messageContentsImage} source={{uri: contents}}></Image>
+}
+
+selectMessageContents = (msg) =>
+{
+	// Check that message has contents
+	if(!msg.contents)
+		return TextMessage("!?No contents?!")
+
+	// If message contents does not have `type` field,
+	//	contents is assumed to be textual
+	if(!msg.contents.type)
+		return TextMessage(msg.contents)
+	
+	let renderFunc = MessageContentTypeMap[msg.contents.type]
+	if(renderFunc)
+		return renderFunc(msg.contents.value)
+}
+
+export default function App() {
+	const RenderMessage = (msg) =>
+	{
+		msg = msg.item
+		return (
+			<View style={styles.message}>
+				<Text style={styles.messageSender}>{msg.sender}</Text>
+				{ selectMessageContents(msg) }
+			</View>
+		)
+		}
+	
+
+	return (
+		<View style={styles.container}>
+			<StatusBar style="auto" />
+
+			<View style={styles.topBar}>
+				<Button title='←' />
+				<Text style={styles.topBarTitle}>Message Group Title</Text>
+			</View>
+
+				<FlatList
+					data={TestMessages}
+					renderItem={RenderMessage}
+					style={styles.messagesArea}
+					keyExtractor={msg => msg.id}
+					/>
+
+			<TextInput
+				style={styles.inputArea}
+				placeholder='Enter message here'
+				placeholderTextColor='#919191'
+			/>
+		</View>
+	);
+}
+
+const styles = StyleSheet.create({
+	// Main container
+	container: {
+		color: '#fff',
+		backgroundColor: '#12131a',
+		alignItems: 'center',
+		paddingBottom: 20,
+	},
+
+	// Top Bar
+	topBar: {
+		width: '100%',
+		margin: 0,
+		height: 50,
+		padding: 10,
+		flexDirection: 'row',
+		backgroundColor: '#1f2230',
+	},
+
+	topBarTitle: {
+		color: '#fff',
+		flexGrow: 1,
+		textAlign: 'center',
+		paddingRight: 30,
+		paddingTop: 6
+	},
+
+	// Messages
+	messagesArea: {
+		padding: 10,
+		width: '95%'
+	},
+
+	message: {
+		marginTop: 5,
+		width: '100%'
+	},
+
+	messageSender: {
+		color: '#889bf7'
+	},
+	messageContentsText: {
+		color: '#fff'
+	},
+
+	// Input
+	inputArea: {
+		width: '90%',
+		color: '#fff',
+		paddingLeft: '5%',
+		paddingTop: 5,
+		paddingBottom: 5,
+		borderRadius: 6,
+		backgroundColor: '#1f2230'
+	}
+});

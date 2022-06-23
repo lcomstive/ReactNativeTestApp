@@ -1,20 +1,50 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { NavigationContainer } from '@react-navigation/native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import 'react-native-gesture-handler'
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+import Chat from './components/Chat';
+import { Styles } from './Styles';
+import HomeScreen from './components/HomeScreen';
+import Login from './components/Login';
+import Register from './components/Register';
+
+const Stack = createStackNavigator();
+
+const NavigationStack = () => {
+	return (
+		<Stack.Navigator>
+			<Stack.Screen
+				name="Login"
+				component={Login} 
+				options={{
+					headerShown: false
+				}}
+			/>
+			<Stack.Screen
+				name="Register"
+				component={Register}
+				options={{
+					headerShown: false
+				}}
+			/>
+			<Stack.Screen name="Home" component={HomeScreen} />
+			<Stack.Screen name="Chat" component={Chat} />
+		</Stack.Navigator>
+	)
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App()
+{
+	return (
+		<GestureHandlerRootView style={{ flex: 1 }}>
+			<SafeAreaView style={{ flex: 1 }} >
+				<NavigationContainer>
+					<NavigationStack />
+				</NavigationContainer>
+			</SafeAreaView>
+		</GestureHandlerRootView>
+	)
+}
